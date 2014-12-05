@@ -1,0 +1,15 @@
+{
+  "name": "mqtt-serial",
+  "version": "0.1.0",
+  "description": "Virtual serial device over MQTT",
+  "main": "index.js",
+  "repository": "git@github.com:monteslu/mqtt-serial.git",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Luis Montes",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^2.4.1"
+  }
+}
