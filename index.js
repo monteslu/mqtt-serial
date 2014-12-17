@@ -18,13 +18,12 @@ function MQTTSerialPort(options) {
 
   var self = this;
 
-  this.client.subscribe(this.receiveTopic, {qos: this.options.qos});
+  this.client.subscribe(this.receiveTopic, {qos: this.qos});
 
   this.client.on('message', function(topic, data){
     try{
-      console.log('received', topic, data);
       if(topic === self.receiveTopic){
-        self.emit('data', data);
+        self.emit('data', new Buffer(data, 'base64'));
       }
 
     }catch(exp){
@@ -56,7 +55,7 @@ MQTTSerialPort.prototype.write = function (data, callback) {
     data = new Buffer(data);
   }
 
-  this.client.publish(this.transmitTopic, data, {qos: this.options.qos});
+  this.client.publish(this.transmitTopic, data.toString('base64'), {qos: this.qos});
 };
 
 
@@ -84,38 +83,38 @@ MQTTSerialPort.prototype.drain = function (callback) {
 
 
 function bindPhysical(options){
-  this.client = options.client;
-  this.receiveTopic = options.receiveTopic;
-  this.transmitTopic = options.transmitTopic;
-  this.qos = options.qos || 0;
+  var client = options.client;
+  var serialPort = options.serialPort;
+  var receiveTopic = options.receiveTopic;
+  var transmitTopic = options.transmitTopic;
+  var qos = options.qos || 0;
 
   function serialWrite(data){
     try{
       if(typeof data === 'string'){
         data = new Buffer(data, 'base64');
       }
+      console.log('writing to serialPort', data);
       serialPort.write(data);
     }catch(exp){
       console.log('error reading message', exp);
     }
   }
 
-  this.client.subscribe(this.receiveTopic, {qos: this.options.qos});
+  client.subscribe(receiveTopic, {qos: qos});
 
   serialPort.on('data', function(data){
-    console.log('sending data:', data);
     if (!Buffer.isBuffer(data)) {
       data = new Buffer(data);
     }
 
-    this.client.publish(this.transmitTopic, data, {qos: this.options.qos});
+    client.publish(transmitTopic, data.toString('base64'), {qos: qos});
   });
 
 
-  this.client.on('message', function(topic, data){
+  client.on('message', function(topic, data, packet){
     try{
-      if(topic === self.receiveTopic){
-        console.log('received', topic, data);
+      if(topic === receiveTopic){
         serialWrite(data);
       }
     }catch(exp){
