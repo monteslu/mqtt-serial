@@ -11,7 +11,7 @@ var serialPort = new SerialPort(SERIAL_PORT,{
     buffersize: 1
 });
 
-var client = mqtt.createClient(1883, 'localhost');
+var client = mqtt.createClient(1883, {encoding: 'binary'});
 
 bindPhysical({
   serialPort: serialPort,

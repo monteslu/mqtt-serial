@@ -6,7 +6,7 @@ var VirtualSerialPort = require('../index').SerialPort;
 var firmata = require('firmata');
 
 
-var client = mqtt.createClient(1883, 'localhost');
+var client = mqtt.createClient(1883, {encoding: 'binary'});
 
 var sp = new VirtualSerialPort({
   client: client,

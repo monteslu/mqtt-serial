@@ -23,7 +23,12 @@ function MQTTSerialPort(options) {
   this.client.on('message', function(topic, data){
     try{
       if(topic === self.receiveTopic){
-        self.emit('data', new Buffer(data, 'base64'));
+        if(typeof data === 'string'){
+          self.emit('data', data);
+        }else{
+          self.emit('data', new Buffer(data, 'base64'));
+        }
+
       }
 
     }catch(exp){
@@ -55,7 +60,7 @@ MQTTSerialPort.prototype.write = function (data, callback) {
     data = new Buffer(data);
   }
 
-  this.client.publish(this.transmitTopic, data.toString('base64'), {qos: this.qos});
+  this.client.publish(this.transmitTopic, data, {qos: this.qos});
 };
 
 
@@ -108,7 +113,7 @@ function bindPhysical(options){
       data = new Buffer(data);
     }
 
-    client.publish(transmitTopic, data.toString('base64'), {qos: qos});
+    client.publish(transmitTopic, data, {qos: qos});
   });
 
 
