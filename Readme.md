@@ -1,8 +1,7 @@
 mqtt-serial
 =============
 
-Virtual serial port running using MQTT
-
+A virtual [node-serialport](https://github.com/voodootikigod/node-serialport) implementation that uses MQTT as the transport.
 
 
 # MQTTSerialPort

@@ -1,7 +1,7 @@
-mqtt-serial example
+mqtt-serial example app
 =============
 
-Virtual serial port running using MQTT
+Virtual serial port clients and server running on MQTT
 
 ## Getting started
 
