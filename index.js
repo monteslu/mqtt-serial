@@ -2,8 +2,6 @@
 
 var util = require('util');
 var stream = require('stream');
-var _ = require('lodash');
-
 
 
 function MQTTSerialPort(options) {
