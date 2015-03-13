@@ -65,6 +65,9 @@ MQTTSerialPort.prototype.write = function (data, callback) {
 
 MQTTSerialPort.prototype.close = function (callback) {
   console.log('closing');
+  if(this.client){
+    this.client.end();
+  }
   if(callback){
     callback();
   }
