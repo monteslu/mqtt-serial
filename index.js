@@ -13,6 +13,7 @@ function MQTTSerialPort(options) {
   this.buffer = null;
   this.lastCheck = 0;
   this.lastSend = 0;
+  this.base64 = options.base64 || false;
 
   var self = this;
 
@@ -21,12 +22,11 @@ function MQTTSerialPort(options) {
   this.client.on('message', function(topic, data){
     try{
       if(topic === self.receiveTopic){
-        if(typeof data === 'string'){
-          self.emit('data', data);
+        if(self.base64){
+          self.emit('data', new Buffer(data.toString(), 'base64'));
         }else{
-          self.emit('data', new Buffer(data, 'base64'));
+          self.emit('data', data);
         }
-
       }
 
     }catch(exp){
@@ -52,10 +52,13 @@ MQTTSerialPort.prototype.open = function (callback) {
 
 MQTTSerialPort.prototype.write = function (data, callback) {
 
-  console.log('sending data:', data);
 
   if (!Buffer.isBuffer(data)) {
     data = new Buffer(data);
+  }
+
+  if(this.base64){
+    data = data.toString('base64');
   }
 
   this.client.publish(this.transmitTopic, data, {qos: this.qos});
@@ -94,11 +97,12 @@ function bindPhysical(options){
   var receiveTopic = options.receiveTopic;
   var transmitTopic = options.transmitTopic;
   var qos = options.qos || 0;
+  var useBase64 = options.base64 || false;
 
   function serialWrite(data){
     try{
-      if(typeof data === 'string'){
-        data = new Buffer(data, 'base64');
+      if(useBase64){
+        data = new Buffer(data.toString(), 'base64');
       }
       console.log('writing to serialPort', data);
       serialPort.write(data);
@@ -112,6 +116,10 @@ function bindPhysical(options){
   serialPort.on('data', function(data){
     if (!Buffer.isBuffer(data)) {
       data = new Buffer(data);
+    }
+
+    if(useBase64){
+      data = data.toString('base64');
     }
 
     client.publish(transmitTopic, data, {qos: qos});
