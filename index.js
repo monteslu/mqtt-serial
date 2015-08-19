@@ -42,17 +42,12 @@ util.inherits(MQTTSerialPort, stream.Stream);
 
 MQTTSerialPort.prototype.open = function (callback) {
   this.emit('open');
-  if (callback) {
-    callback();
-  }
-
+  if (typeof callback === 'function') callback();
 };
 
 
 
 MQTTSerialPort.prototype.write = function (data, callback) {
-
-
   if (!Buffer.isBuffer(data)) {
     data = new Buffer(data);
   }
@@ -61,7 +56,9 @@ MQTTSerialPort.prototype.write = function (data, callback) {
     data = data.toString('base64');
   }
 
-  this.client.publish(this.transmitTopic, data, {qos: this.qos});
+  this.client.publish(this.transmitTopic, data, {qos: this.qos}, function () {
+    if (typeof callback === 'function') callback(null);
+  });
 };
 
 
@@ -71,23 +68,17 @@ MQTTSerialPort.prototype.close = function (callback) {
   if(this.client){
     this.client.end();
   }
-  if(callback){
-    callback();
-  }
+  if (typeof callback === 'function') callback();
 };
 
 MQTTSerialPort.prototype.flush = function (callback) {
   console.log('flush');
-  if(callback){
-    callback();
-  }
+  if (typeof callback === 'function') callback();
 };
 
 MQTTSerialPort.prototype.drain = function (callback) {
   console.log('drain');
-  if(callback){
-    callback();
-  }
+  if (typeof callback === 'function') callback();
 };
 
 
