@@ -19,6 +19,8 @@ function MQTTSerialPort(options) {
 
   this.client.subscribe(this.receiveTopic, {qos: this.qos});
 
+  this.emit('open');
+
   this.client.on('message', function(topic, data){
     try{
       if(topic === self.receiveTopic){

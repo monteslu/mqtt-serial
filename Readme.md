@@ -14,7 +14,7 @@ var mqtt = require('mqtt');
 var firmata = require('firmata');
 
 // setup the mqtt client with port, host, and optional credentials
-var client = mqtt.createClient(3000, {username: 'A USER', password: 'A PASSWORD', encoding: 'binary'});
+var client = mqtt.connect('mqtt://127.0.0.1:1883', {username: 'A USER', password: 'A PASSWORD'});
 
 //create the mqtt serialport and specify the send and receive topics
 var serialPort = new MQTTSerialPort({
@@ -43,7 +43,7 @@ var bindPhysical = require('mqtt-serial').bindPhysical;
 var skynet = require('mqtt');
 
 // setup the mqtt client with port, host, and optional credentials
-var client = mqtt.createClient(3000, {username: 'A USER', password: 'A PASSWORD', encoding: 'binary'});
+var client = mqtt.connect('mqtt://127.0.0.1:1883', {username: 'A USER', password: 'A PASSWORD'});
 
 // setup a connection to a physical serial port
 var serialPort = new SerialPort('/dev/tty.usbmodem1411',{
